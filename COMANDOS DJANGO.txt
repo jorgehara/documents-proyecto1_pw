@@ -1,0 +1,20 @@
+
+pip install django (en el entorno virtual)
+
+pip install django==3.2.9 (para especificar la version de la libreria a instalar)
+
+pip uninstall django (para desinstalar django)
+
+pip install django-mssql-backend (instalar conector a base de datos)
+
+django-admin startproject Market (crear proyecto en python)
+
+python manage.py runserver (Activar servidor)
+
+python manage.py createsuperuser (Crear super usuario)
+
+python manage.py check
+
+python manage makemigration (Crea la carpeta para imigrar)
+
+python manage.py migrate (Hace la imigracion)

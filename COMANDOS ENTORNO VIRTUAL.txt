@@ -1,0 +1,15 @@
+Comandos para crear un entorno virtual
+
+pip install virtual env (Instalar)
+
+deactivate (Salir del entorno virtual)
+
+python -m venv "nombre entorno" (Crear entorno virtual)
+
+\Scripts\activate (Entrar al entorno virtual)
+
+deactivate (Salir del entorno virtual)
+
+pip freeze > requirements.txt (EN CADA PROYECTO SE DEBERA CREAR UN ARCHIVO DE REQUERIMIENTOS. CON ESTE COMANDO. DENTRO DEL ENTORNO VIRTUAL)
+
+pip install -r requirements.txt (PARA INSTALAR TODAS LAS LIBRERIAS QUE SE CREARON EN EL PROYECTO)

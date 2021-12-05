@@ -1,0 +1,228 @@
+1_ En la carpeta raiz, crear un archivo titulado ".gitignore" y dentro escribir:
+*.pyc
+Es para que la memoria cache al levantar el servidor no se suba al repositorio.
+Esto va a funcionar si al crear el repo agregamos ademas del readme, gitignore
+
+3_ CREAR UN ARCHIVO "views.py" dentro de la carpeta donde se encuentra los archivos.py
+
+4_ ir a settings.py y crear dentro de la variable TEMPLATES. en la clave 'DIRS' le asignamos el valor ["templates"
+
+5_ Dentro de la ubicaion donde se encuentra manage.py, crear una carpeta "templates"
+
+7_ Dentro de la carpeta "templates" creamos un archivo html. "inicio.html"
+
+6_ En el archivo de views.py crear una funcion para que renderize el template. Se importa de la libreria django la funcion render.
+
+from django.shortcuts import render
+def inicio(request):
+	return render(request, 'inicio.html')
+
+7_ ir a urls.py e importar:
+
+from . import views
+
+y quedaria asi la funcion:
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('inicio/', views.inicio)
+]
+
+8_ crear un diccionario en la funcion inicio de views.py para el template para su posterior render
+usuario = {
+        "nombre":"Lisandro",
+        "apellido":"Rodriguez"
+    }
+(Se los pasa a travez de una variable que se conoce como contexto)
+
+context = {
+        "usuario":usuario
+
+
+Y SE LO AGREGA AL RENDERIZADO:
+
+return render(request, 'inicio.html', context)
+
+SI QUEREMOS CREAR UNA LISTA DE DICCIONARIOS DE PRODUCTOS SE HARIA DE LA SIGUIENTE MANERA:
+
+productos = [
+        {"nombre":"Teclado", "precio":4400},
+        {"nombre":"Mouse", "precio":2200}
+
+]
+
+y se lo pasa a la variable context:
+
+context = {
+        "usuario":usuario
+	"productos":productos
+}
+
+
+9_ Para mostrar lo que hay en la variable context, en el template html. se lo escribe en el body con la siguiente sintaxys:
+
+{{usuario.nombre}} (Para mostrar el nombre)
+
+en caso de recorrer una lista de diccionarios, la siguiente sintaxis del html es:
+
+<ul>
+        {% for p in productos %}
+        <li>{{p.nombre}} - $ {{p.precio}}</li>
+        {% endfor %}
+</ul>
+
+10_Crear una base de datos, una tabla, para lo siguiente:
+
+ir a settings.py dentro del proyecto en la variable "DATABASES"
+Por defecto django trae dbsqlite. Lo eliminamos al archivo
+
+en la seccion "DATABASES" 'ENGINE' se establece la conexion a la base de datos
+
+con la siguiente sintaxys para mysql:
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'LaSalada2',
+        'USER': 'postgres',
+        'PASSWORD':'3624',
+        'HOST':'localhost',
+        'PORT': '5432'
+    }
+}
+
+11_ Lo siguiente es instalar un conector de base de datos en el cmd dentro del entorno virtual:
+
+pip install psycopg2-binary (libreria de postgresql)
+
+
+DJANGO TRABAJA CON ORM, Un ORM es un modelo de programación que permite mapear las estructuras de una base de datos relacional (SQL Server, Oracle, MySQL, etc.) .
+Asignacion objeto relacional
+
+python trabaja con el concepto de aplicaciones para modularizar las funciones de nuestro proyecto
+
+para inicializar esto, se escribe el siguiente comando en el cmd dentro del entorno virtual:
+
+django-admin startapp productos
+
+crea una aplicacion productos, se van a almacenar todas las vistas y modelos de los productos dentro de esta aplicacion
+
+12_ DENTRO DE LA CARPETA MODELS DE LA APLICACION PRODUCTOS, SE CREA UNA CLASE PARA QUE MATCHEE CON LA TABLA, y sus atributos van a ser los campos de la tabla
+
+class Producto(models.Model):
+    DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+    name = 'productos'
+
+
+ 13_ ir a settings.py y en la variable INSTALLED_APPS quedaria asi:
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'productos'
+]
+
+en consola ejecutar python manage.py makemigrations 
+
+luego ejecutar python manage.py migrate
+
+14_ volver a views.py y configurar de la siguiente manera para que en la pagina web se muestre la tabla productos:
+
+from django.shortcuts import render
+from productos.models import Producto
+
+def inicio(request):
+    productos = Producto.objects.all()
+    usuario = {
+        "nombre":"Lisandro",
+        "apellido":"Rodriguez"
+    }
+    context = {
+        "usuario":usuario,
+        "productos":productos
+    }
+    return render(request, 'inicio.html', context)
+
+Y YA TA SE HIZO TODA LA CONECCION
+
+15_ Para copiar una plantilla de interfaz. ir a boostrap seleccionar una y dar click derecho inspeccionar y en <html lang-"en"> damos: copiar > copiar elemento 
+
+y llevarlo a nuestro html
+
+Hay que traer la libreria de BOOTSTRAP a nuestro HTML para que haga efecto
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+y reemplazarlo por el de defecto linea 14
+
+IMPORTANTE: Tambien extraer el archivo.css de la pagina de la cual se copio el link. Damos a inspeccionar, vamos a "Sources" y en la carpeta examples esta.
+
+Creamos a la altura de templates una carpeta "statics" donde se van a guardar los archivos css y javascript
+
+Dentro de esa carpeta de "statics" creamos una carpeta de "css" donde se van a guardar todos los archivos css
+
+Y creamos un archivito login.css
+
+En este archivito le pasamos lo que hay en la carpeta sources despues de inspeccionar.
+
+14_ Vamos a urls.py y levantamos la pagina de login
+
+Añadimos en url_patterns:
+
+path('login/', views.login)
+
+y la carpeta de views, definimos la ruta:
+
+def login(request):
+	return render(request, 'login.html')
+
+15_ en el HTML en el <link href="login.css" rel="stylesheet">
+le pasamos con href nuestro archivo de css.
+
+16_ Para que DJANGO lo lea, hay que ir a settings.py. Y CREAMOS UNA NUEVA VARIABLE:
+
+STATICFILES_DIRS = (''
+,
+)
+
+PARQ QUE SE CONECTEN LAS RUTAS TENEMOS QUE HACER LO SIGUIENTE DENTRO DE LA VARIABLE STATICFILES
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR,'static'),
+)
+
+Para que la libreria os funcione. importamos: import os en settings.py
+
+17_ En el template "login.html" arriba de todo, arriba de la cabezera poner: {% load static %} para que el template tome lo que hay en la plantilla static
+
+ESTO PERMITE UTILIZAR UN TAC.
+
+y en la linea 14 establecemos la coneccion para que genere una ruta directo donde este nuestro css:
+
+<link href="{% static 'login.css' %}" rel="stylesheet">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
